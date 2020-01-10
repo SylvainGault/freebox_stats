@@ -61,7 +61,9 @@ class StatsPage(object):
 
     @property
     def bootup_date(self):
-        return datetime.datetime.now() - self.uptime
+        """ The bootup time of the freebox in UTC timezone. """
+        now = datetime.datetime.now(datetime.timezone.utc)
+        return now - self.uptime
 
     @property
     def adsl_state(self):
@@ -136,6 +138,7 @@ class StatsPage(object):
             bootup = date is None
             if not bootup:
                 date = datetime.datetime.strptime(date, "%d/%m/%Y à %H:%M:%S")
+                date = date.astimezone(datetime.timezone.utc)
             else:
                 date = self.bootup_date
 
@@ -212,6 +215,9 @@ def store_logs(page, cur):
         lastdate = datetime.datetime(1970, 1, 1)
     else:
         lastdate = datetime.datetime.fromisoformat(lastdate)
+
+    if lastdate.tzinfo is None:
+        lastdate = lastdate.replace(tzinfo=datetime.timezone.utc)
 
     # Store the ADSL connection log entries
     for date, isbootup, event, down, up in page.connection_events:
