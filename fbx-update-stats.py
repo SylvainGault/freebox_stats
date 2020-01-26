@@ -27,7 +27,7 @@ class StatsPage(object):
         if self._content is not None:
             return self._content
 
-        res = requests.get(self.url)
+        res = requests.get(self.url, timeout=60*60)
         res.raise_for_status()
         self._content = res.text
         return self._content
