@@ -133,7 +133,8 @@ class StatsPage(object):
 
         eventre = re.compile(r'(?:(\d+/\d+/\d+ à \d+:\d+:\d+)|Mise en route)\s+(\S+)(?:\s+(\d+)\s*/\s*(\d+))?\s*\n')
         self._cnx_events = []
-        for m in eventre.finditer(adslcontent):
+        matches = eventre.finditer(adslcontent)
+        for m in reversed(list(matches)):
             date, event, bw_down, bw_up = m.groups()
             bootup = date is None
             if not bootup:
